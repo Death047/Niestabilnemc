@@ -1,0 +1,6 @@
+"scripts": {
+  "start": "node index.js"
+}
+git add .
+git commit -m "dodaj prosty serwer"
+git push origin main
