@@ -162,7 +162,7 @@ app.get('/', (req, res) => {
         <div class="info-box">
             <h2 id="infoTitle">Tytuł</h2>
             <div id="ipContainer">
-                <div class="ip-box-modal" id="infoIp" onclick="copyIp()">niestabilneffa.6mc.pl (kliknij, aby skopiować)</div>
+                <div class="ip-box-modal" id="infoIp">niestabilneffa.6mc.pl (kliknij, aby skopiować)</div>
             </div>
             <p id="infoDesc">Opis</p>
             <button class="modal-close" id="closeInfo">Zamknij</button>
@@ -182,61 +182,71 @@ app.get('/', (req, res) => {
     </div>
 
     <script>
-        const openDiscord = document.getElementById('openDiscord');
-        const closeDiscord = document.getElementById('closeDiscord');
-        const discordModal = document.getElementById('discordModal');
-        openDiscord.addEventListener('click', () => discordModal.style.display = 'flex');
-        closeDiscord.addEventListener('click', () => discordModal.style.display = 'none');
-        discordModal.addEventListener('click', (e) => { if(e.target === discordModal) discordModal.style.display = 'none'; });
-
-        const modeData = {
-            ffa: {
-                title: 'Niestabilne FFA',
-                ip: 'niestabilneffa.6mc.pl',
-                desc: '• Odbierasz kit i idziesz na arenę walczyć\n• Kity premium\n• Losowe areny\n• Event karty\n• Minieventy: meteoryt, happyhours, Mace off'
-            },
-            smp: {
-                title: 'Niestabilne SMP',
-                ip: 'niestabilneffa.6mc.pl',
-                desc: '• Tryb, w którym nagrywane są filmy z historii niestabilnego gracza ogon_.'
-            },
-            mystery: {
-                title: '???',
-                showIp: false,
-                desc: 'Jeszcze niedostępne.'
+        document.addEventListener('DOMContentLoaded', () => {
+            const openDiscord = document.getElementById('openDiscord');
+            const closeDiscord = document.getElementById('closeDiscord');
+            const discordModal = document.getElementById('discordModal');
+            
+            if (openDiscord && discordModal) {
+                openDiscord.addEventListener('click', () => discordModal.style.display = 'flex');
+                closeDiscord.addEventListener('click', () => discordModal.style.display = 'none');
+                discordModal.addEventListener('click', (e) => { if(e.target === discordModal) discordModal.style.display = 'none'; });
             }
-        };
 
-        const infoOverlay = document.getElementById('infoOverlay');
-        const infoTitle = document.getElementById('infoTitle');
-        const ipContainer = document.getElementById('ipContainer');
-        const infoIp = document.getElementById('infoIp');
-        const infoDesc = document.getElementById('infoDesc');
-        const closeInfo = document.getElementById('closeInfo');
-
-        function copyIp() {
-            const ipText = 'niestabilneffa.6mc.pl';
-            navigator.clipboard.writeText(ipText);
-            alert('Skopiowano IP: ' + ipText);
-        }
-
-        document.querySelectorAll('.mode-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const mode = card.dataset.mode;
-                const data = modeData[mode];
-                infoTitle.textContent = data.title;
-                infoDesc.textContent = data.desc;
-                if (data.showIp === false) {
-                    ipContainer.style.display = 'none';
-                } else {
-                    ipContainer.style.display = 'block';
-                    infoIp.textContent = (data.ip || 'niestabilneffa.6mc.pl') + ' (kliknij, aby skopiować)';
+            const modeData = {
+                ffa: {
+                    title: 'Niestabilne FFA',
+                    ip: 'niestabilneffa.6mc.pl',
+                    desc: '• Odbierasz kit i idziesz na arenę walczyć\n• Kity premium\n• Losowe areny\n• Event karty\n• Minieventy: meteoryt, happyhours, Mace off'
+                },
+                smp: {
+                    title: 'Niestabilne SMP',
+                    ip: 'niestabilneffa.6mc.pl',
+                    desc: '• Tryb, w którym nagrywane są filmy z historii niestabilnego gracza ogon_.'
+                },
+                mystery: {
+                    title: '???',
+                    showIp: false,
+                    desc: 'Jeszcze niedostępne.'
                 }
-                infoOverlay.style.display = 'flex';
+            };
+
+            const infoOverlay = document.getElementById('infoOverlay');
+            const infoTitle = document.getElementById('infoTitle');
+            const ipContainer = document.getElementById('ipContainer');
+            const infoIp = document.getElementById('infoIp');
+            const infoDesc = document.getElementById('infoDesc');
+            const closeInfo = document.getElementById('closeInfo');
+
+            if (infoIp) {
+                infoIp.addEventListener('click', () => {
+                    navigator.clipboard.writeText('niestabilneffa.6mc.pl');
+                    alert('Skopiowano IP: niestabilneffa.6mc.pl');
+                });
+            }
+
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const mode = card.dataset.mode;
+                    const data = modeData[mode];
+                    if (!data) return;
+                    infoTitle.textContent = data.title;
+                    infoDesc.textContent = data.desc;
+                    if (data.showIp === false) {
+                        ipContainer.style.display = 'none';
+                    } else {
+                        ipContainer.style.display = 'block';
+                        infoIp.textContent = (data.ip || 'niestabilneffa.6mc.pl') + ' (kliknij, aby skopiować)';
+                    }
+                    infoOverlay.style.display = 'flex';
+                });
             });
+
+            if (closeInfo && infoOverlay) {
+                closeInfo.addEventListener('click', () => infoOverlay.style.display = 'none');
+                infoOverlay.addEventListener('click', (e) => { if(e.target === infoOverlay) infoOverlay.style.display = 'none'; });
+            }
         });
-        closeInfo.addEventListener('click', () => infoOverlay.style.display = 'none');
-        infoOverlay.addEventListener('click', (e) => { if(e.target === infoOverlay) infoOverlay.style.display = 'none'; });
     </script>
 </body>
 </html>`);
