@@ -89,10 +89,17 @@ app.get('/', (req, res) => {
         }
         .info-box {
             background: #111115; border: 2px solid #2a2a35; border-radius: 16px;
-            padding: 35px; width: 90%; max-width: 450px; text-align: center;
+            padding: 35px; width: 90%; max-width: 480px; text-align: center;
         }
         .info-box h2 { color: #ff5555; margin-bottom: 15px; font-size: 1.8rem; }
-        .info-box p { color: #ccc; margin-bottom: 25px; line-height: 1.6; }
+        .info-box p { color: #ccc; margin-bottom: 25px; line-height: 1.6; text-align: left; white-space: pre-line; }
+        .ip-box-modal {
+            background: #000; border: 1px dashed #55ff55; color: #55ff55;
+            padding: 10px 15px; border-radius: 8px; font-family: monospace;
+            font-size: 1rem; margin-bottom: 20px; cursor: pointer; text-align: center;
+            transition: background 0.2s;
+        }
+        .ip-box-modal:hover { background: #0a1f0a; }
         .modal-close {
             background: transparent; color: #fff; border: 1px solid #444;
             padding: 10px 25px; border-radius: 8px; cursor: pointer; transition: 0.2s;
@@ -136,24 +143,27 @@ app.get('/', (req, res) => {
     </div>
 
     <div class="modes-grid">
-        <div class="mode-card" data-title="Niestabilne FFA" data-desc="Bezlitosna rzeź arenowa z szybkim respawnem, losowym uzbrojeniem i dynamiczną tablicą wyników.">
+        <div class="mode-card" data-mode="ffa">
             <h3>Niestabilne FFA</h3>
             <p>Kliknij po szczegóły</p>
         </div>
-        <div class="mode-card" data-title="Niestabilne SMP" data-desc="Klasyczny survival wzbogacony o niestabilne eventy, ekonomię graczy i customowe budowle.">
+        <div class="mode-card" data-mode="smp">
             <h3>Niestabilne SMP</h3>
             <p>Kliknij po szczegóły</p>
         </div>
-        <div class="mode-card mystery" data-title="???" data-desc="[ZABLOKOWANE] Eksperymentalny protokół w fazie ukrytych testów. Wkrótce więcej informacji.">
+        <div class="mode-card mystery" data-mode="mystery">
             <h3>???</h3>
             <p>Nieznane przeznaczenie</p>
         </div>
     </div>
 
-    <!-- Modal szczegółów trybu -->
+    <!-- Modal detali trybu -->
     <div class="info-overlay" id="infoOverlay">
         <div class="info-box">
             <h2 id="infoTitle">Tytuł</h2>
+            <div id="ipContainer">
+                <div class="ip-box-modal" id="infoIp" onclick="copyIp()">niestabilneffa.6mc.pl (kliknij, aby skopiować)</div>
+            </div>
             <p id="infoDesc">Opis</p>
             <button class="modal-close" id="closeInfo">Zamknij</button>
         </div>
@@ -179,15 +189,49 @@ app.get('/', (req, res) => {
         closeDiscord.addEventListener('click', () => discordModal.style.display = 'none');
         discordModal.addEventListener('click', (e) => { if(e.target === discordModal) discordModal.style.display = 'none'; });
 
+        const modeData = {
+            ffa: {
+                title: 'Niestabilne FFA',
+                ip: 'niestabilneffa.6mc.pl',
+                desc: '• Odbierasz kit i idziesz na arenę walczyć\n• Kity premium\n• Losowe areny\n• Event karty\n• Minieventy: meteoryt, happyhours, Mace off'
+            },
+            smp: {
+                title: 'Niestabilne SMP',
+                ip: 'niestabilneffa.6mc.pl',
+                desc: '• Tryb, w którym nagrywane są filmy z historii niestabilnego gracza ogon_.'
+            },
+            mystery: {
+                title: '???',
+                showIp: false,
+                desc: 'Jeszcze niedostępne.'
+            }
+        };
+
         const infoOverlay = document.getElementById('infoOverlay');
         const infoTitle = document.getElementById('infoTitle');
+        const ipContainer = document.getElementById('ipContainer');
+        const infoIp = document.getElementById('infoIp');
         const infoDesc = document.getElementById('infoDesc');
         const closeInfo = document.getElementById('closeInfo');
 
+        function copyIp() {
+            const ipText = 'niestabilneffa.6mc.pl';
+            navigator.clipboard.writeText(ipText);
+            alert('Skopiowano IP: ' + ipText);
+        }
+
         document.querySelectorAll('.mode-card').forEach(card => {
             card.addEventListener('click', () => {
-                infoTitle.textContent = card.dataset.title;
-                infoDesc.textContent = card.dataset.desc;
+                const mode = card.dataset.mode;
+                const data = modeData[mode];
+                infoTitle.textContent = data.title;
+                infoDesc.textContent = data.desc;
+                if (data.showIp === false) {
+                    ipContainer.style.display = 'none';
+                } else {
+                    ipContainer.style.display = 'block';
+                    infoIp.textContent = (data.ip || 'niestabilneffa.6mc.pl') + ' (kliknij, aby skopiować)';
+                }
                 infoOverlay.style.display = 'flex';
             });
         });
